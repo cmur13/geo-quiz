@@ -23,17 +23,17 @@ class MainActivity : AppCompatActivity() {
              //   R.string.correct_toast,
              //   Toast.LENGTH_SHORT
             Snackbar.make(
-                findViewById(R.id.main),
+                findViewById(R.id.snack),
                 R.string.correct_toast,
                 Snackbar.LENGTH_SHORT
             ).show()
         }
 
-        falseButton.setOnClickListener { view: View->
-            Toast.makeText(
-                this,
+        falseButton.setOnClickListener {
+            Snackbar.make(
+                findViewById(R.id.snack),
                 R.string.incorrect_toast,
-                Toast.LENGTH_SHORT
+                Snackbar.LENGTH_SHORT
             ).show()
         }
     }

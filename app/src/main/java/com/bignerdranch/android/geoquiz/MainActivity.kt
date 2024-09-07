@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import com.bignerdranch.android.geoquiz.databinding.ActivityMainBinding
 import android.widget.Button
+import androidx.activity.viewModels
 import com.google.android.material.snackbar.Snackbar
 
 // add a TAG constant
@@ -15,17 +16,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    // create a list of question objects in MainActivity
-    private val questionBank = listOf(
-        Question(R.string.question_australia, true),
-        Question(R.string.question_oceans, true),
-        Question(R.string.question_mideast,false),
-        Question(R.string.question_africa, false),
-        Question(R.string.question_americas, true),
-        Question(R.string.question_asia,true)
-    )
-    // index for the list
-    private var currentIndex = 0
+    //add instance of QuizViewModel by invoking the viewModels() property delegate
+    private val quizViewModel: QuizViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +26,8 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "OnCreate(Bundle?) called")
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        Log.d(TAG, "Got a QuizViewModel: $quizViewModel")
 
         binding.trueButton.setOnClickListener{view: View->
             checkAnswer(true)
@@ -43,16 +38,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.nextButton.setOnClickListener {
-            currentIndex=(currentIndex+1) % questionBank.size
+            quizViewModel.moveToNext()
             updateQuestion()
         }
 
         // add previous button
         binding.prevButton.setOnClickListener {
-            currentIndex = (currentIndex - 1) % questionBank.size
+            quizViewModel.moveBack()
             updateQuestion()
         }
-
         updateQuestion()
     }
     // override five more lifecycle funcions
@@ -82,11 +76,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateQuestion(){
-        val questionTextResID = questionBank[currentIndex].textResId
-        binding.questionTextView.setText(questionTextResID)
+        val questionTextResId = quizViewModel.currentQuestionText
+        binding.questionTextView.setText(questionTextResId)
     }
     private fun checkAnswer(userAnswer: Boolean){
-        val correctAnswer = questionBank[currentIndex].answer
+        val correctAnswer = quizViewModel.currentQuestionAnswer
         val messageResId = if(userAnswer == correctAnswer){
             R.string.correct_toast
         }

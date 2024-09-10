@@ -2,6 +2,9 @@ package com.bignerdranch.android.geoquiz
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.RenderEffect
+import android.graphics.Shader
+import android.graphics.Shader.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -40,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         Log.d(TAG, "Got a QuizViewModel: $quizViewModel")
+
 
         binding.trueButton.setOnClickListener{view: View->
             checkAnswer(true)
@@ -97,9 +101,16 @@ class MainActivity : AppCompatActivity() {
     private fun updateQuestion(){
         val questionTextResId = quizViewModel.currentQuestionText
         binding.questionTextView.setText(questionTextResId)
+        isAnswered()
     }
     private fun checkAnswer(userAnswer: Boolean){
         val correctAnswer = quizViewModel.currentQuestionAnswer
+
+        // score system, challenge
+        if(userAnswer == correctAnswer){
+            quizViewModel.increaseScore()
+        }
+
         val messageResId = when{
             quizViewModel.isCheater -> R.string.judgment_toast
             userAnswer == correctAnswer -> R.string.correct_toast
@@ -107,5 +118,17 @@ class MainActivity : AppCompatActivity() {
         }
         Snackbar.make(findViewById(R.id.snack), messageResId, Snackbar.LENGTH_SHORT)
             .show()
+
+        quizViewModel.questionAnswered()
+        isAnswered()
+        quizViewModel.showScore(this)
     }
+
+    // helper method, disables buttons if user answered
+    private fun isAnswered(){
+        val answered = quizViewModel.isCurrentQuestionAnswered()
+        binding.trueButton.isEnabled = !answered
+        binding.falseButton.isEnabled = !answered
+    }
+
 }

@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">GeoQuiz</string>
-    <string name="question_australia">Canberra is the capital of Australia.</string>
-    <string name="question_oceans">The Pacific Ocean is larger than the Atlantic Ocean.</string>
-    <string name="question_mideast">The Suez Canal connects the Red Sea and the Indian Ocean.</string>
-    <string name="question_africa">The source of the Nile River is in Egypt.</string>
-    <string name="question_americas">The Amazon River is the longest river in the Americas.</string>
-    <string name="question_asia">Lake Baikal is the world\'s oldest and deepest freshwater lake.</string>
+    <string name="question_brazil">Brazil has won the FIFA World Cup five times.</string>
+    <string name="question_copa">The Copa America is the oldest international continental football competition.</string>
+    <string name="question_uruguay">The first FIFA World Cup was held in Uruguay in 1930.</string>
+    <string name="question_goalkeeper">The goalkeeper is the only player who can use their hands anywhere on the field.</string>
+    <string name="question_soccer">A soccer team consists of 11 players on the field.</string>
+    <string name="question_usa">The United States has never reached the semi-finals of the FIFA World Cup.</string>
     <string name="true_button">True</string>
     <string name="false_button">False</string>
     <string name="next_button">Next</string>

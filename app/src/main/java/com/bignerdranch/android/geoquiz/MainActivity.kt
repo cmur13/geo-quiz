@@ -1,11 +1,14 @@
 package com.bignerdranch.android.geoquiz
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.bignerdranch.android.geoquiz.databinding.ActivityMainBinding
 import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import com.google.android.material.snackbar.Snackbar
 
@@ -18,6 +21,15 @@ class MainActivity : AppCompatActivity() {
 
     //add instance of QuizViewModel by invoking the viewModels() property delegate
     private val quizViewModel: QuizViewModel by viewModels()
+
+    private val cheatLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result->
+        //Handle the result
+        if(result.resultCode == Activity.RESULT_OK){
+            quizViewModel.isCheater = result.data?.getBooleanExtra(EXTRA_ANSWER_SHOWN, false) ?: false
+        }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +59,13 @@ class MainActivity : AppCompatActivity() {
             quizViewModel.moveBack()
             updateQuestion()
         }
+        binding.cheatButton.setOnClickListener {
+            // start cheat activity
+            val answerIsTrue = quizViewModel.currentQuestionAnswer
+            val intent = CheatActivity.newIntent(this@MainActivity, answerIsTrue)
+            cheatLauncher.launch(intent)
+        }
+
         updateQuestion()
     }
     // override five more lifecycle funcions
@@ -81,11 +100,10 @@ class MainActivity : AppCompatActivity() {
     }
     private fun checkAnswer(userAnswer: Boolean){
         val correctAnswer = quizViewModel.currentQuestionAnswer
-        val messageResId = if(userAnswer == correctAnswer){
-            R.string.correct_toast
-        }
-        else{
-            R.string.incorrect_toast
+        val messageResId = when{
+            quizViewModel.isCheater -> R.string.judgment_toast
+            userAnswer == correctAnswer -> R.string.correct_toast
+            else -> R.string.incorrect_toast
         }
         Snackbar.make(findViewById(R.id.snack), messageResId, Snackbar.LENGTH_SHORT)
             .show()
